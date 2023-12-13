@@ -1,0 +1,3 @@
+cassandra_data_volume_name: "/dev/sdb"
+pv_partition_number: 1
+pv_name: "{{ cassandra_data_volume_name }}{{ pv_partition_number }}"

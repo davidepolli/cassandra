@@ -1,0 +1,31 @@
+cluster_name: '{{ cluster_name }}'
+
+# Directories where Cassandra should store data on disk. If multiple
+# directories are specified, Cassandra will spread data evenly across
+# them by partitioning the token ranges.
+# If not set, the default directory is $CASSANDRA_HOME/data/data.
+data_file_directories:
+  - {{ data_file_directory }}
+
+# any class that implements the SeedProvider interface and has a
+# constructor that takes a Map<String, String> of parameters will do.
+seed_provider:
+  # Addresses of hosts that are deemed contact points.
+  # Cassandra nodes use this list of hosts to find each other and learn
+  # the topology of the ring.  You must change this if you are running
+  # multiple nodes!
+  - class_name: org.apache.cassandra.locator.SimpleSeedProvider
+    parameters:
+      # seeds is actually a comma-delimited list of addresses.
+      # Ex: "<ip1>,<ip2>,<ip3>"
+      #- seeds: "127.0.0.1:7000"
+      #- seeds: "10.206.129.111:7000,10.206.129.83:7000,10.206.129.93:7000"
+       - seeds: "{{ cassandra_seeds }}"
+      # If set to "true", SimpleSeedProvider will return all IP addresses for a DNS name,
+      # based on the configured name service on the system. Defaults to "false".
+      #  resolve_multiple_ip_addresses_per_dns_record: "false"
+
+      
+
+listen_address: {{ hostvars[inventory_hostname]['ansible_host'] }}
+rpc_address: {{ hostvars[inventory_hostname]['ansible_host'] }}

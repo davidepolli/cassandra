@@ -1,0 +1,17 @@
+---
+
+- name: Cassandra seeds
+  set_fact:
+    cassandra_seeds: "{{ groups['members'] | map('extract', hostvars, ['ansible_host']) | map('regex_replace', '(.+)$', '\\1:' + seed_port|string) | list | join(',') }}"
+
+- name: Operating system maintenance
+  import_tasks: ./system.yaml
+
+- name: Data volume management
+  import_tasks: ./data_volume.yaml
+
+- name: Java configuration
+  import_tasks: ./java.yaml
+
+- name: Cassandra configuration
+  import_tasks: ./cassandra.yaml

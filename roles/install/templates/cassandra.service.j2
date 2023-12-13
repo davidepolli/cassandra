@@ -1,0 +1,18 @@
+[Unit]
+Description=Cassandra Database Service
+After=network-online.target
+Requires=network-online.target
+
+[Service]
+Environment=JAVA_HOME={{ java_home }}
+User=cassandra
+Group=cassandra
+PIDFile=/opt/cassandra/run/cassandra.pid
+ExecStart=/opt/cassandra/bin/cassandra -f -R -p /opt/cassandra/run/cassandra.pid
+StandardOutput=journal
+StandardError=journal
+Restart=always
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target

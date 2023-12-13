@@ -1,0 +1,7 @@
+---
+
+- name: Playbook to install and configure a Cassandra cluster
+  hosts: members
+  gather_facts: true
+  roles:
+    - role: install

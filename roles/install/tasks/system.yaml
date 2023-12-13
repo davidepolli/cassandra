@@ -1,0 +1,32 @@
+---
+
+#- name: Aggiorna il repository del sistema
+#  apt:
+#    update_cache: yes
+
+#- name: Effettua l'upgrade dei pacchetti
+#  apt:
+#    upgrade: yes
+
+#- name: Rimuovi i pacchetti non necessari
+#  apt:
+#    autoremove: yes
+
+- name: Installa bash-completion
+  apt:
+    name: bash-com*
+    state: present
+
+- name: Add cassandra user
+  user:
+    name: "{{ cassandra_user }}"
+    createhome: yes
+    shell: /bin/bash
+    password: "{{ cassandra_user_password | password_hash('sha512') }}"
+
+- name: Add hostnames and IPs to /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{ hostvars[item].ansible_host }} {{ hostvars[item].inventory_hostname }}"
+    insertbefore: '^#.*{{ item }}$'
+  loop: "{{ groups['members'] }}"

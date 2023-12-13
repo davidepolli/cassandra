@@ -1,0 +1,18 @@
+---
+cassandra_user: cassandra
+cassandra_user_password: cassandra
+
+java_version: "zulu11.62.17-ca-jdk11.0.18-linux_x64"
+java_url: "https://cdn.azul.com/zulu/bin/{{ java_version }}.tar.gz"
+java_install_dir: "/usr/lib/jvm"
+java_home: "{{ java_install_dir }}/{{ java_version }}"
+
+cassandra_version: "4.1.3"
+cassandra_url: https://dlcdn.apache.org/cassandra/{{ cassandra_version }}/apache-cassandra-{{ cassandra_version }}-bin.tar.gz
+cassandra_directory: "/opt/cassandra"
+data_file_directory: "{{ cassandra_directory}}/data"
+cluster_name: 'my-cassandra'
+seed_port: 7000
+
+max_heap_size: "1G"
+heap_newsize: "256M"

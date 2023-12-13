@@ -1,0 +1,61 @@
+---
+
+- name: Download Cassandra archive
+  ansible.builtin.get_url:
+    url: "{{ cassandra_url }}"
+    dest: /opt
+    mode: 0644
+
+- name: Extract Cassandra archive
+  ansible.builtin.unarchive:
+    src: "/opt/apache-cassandra-{{ cassandra_version }}-bin.tar.gz"
+    dest: /opt
+    remote_src: yes
+
+- name: Copy Cassandra files
+  ansible.builtin.copy:
+    src: /opt/apache-cassandra-{{ cassandra_version }}/
+    dest: /opt/cassandra/
+    remote_src: yes
+
+- name: Set ownership of Cassandra directory
+  ansible.builtin.file:
+    path: "/opt/cassandra"
+    state: directory
+    owner: "{{ cassandra_user }}"
+    group: "{{ cassandra_user }}"
+    recurse: true
+
+- name: Update content of /opt/cassandra/conf/cassandra.yaml
+  template:
+    src: "cassandra.yaml.j2"
+    dest: "/opt/cassandra/conf/cassandra.yaml"
+    backup: true
+
+- name: Update content of /opt/cassandra/conf/cassandra-env.sh
+  template:
+    src: "cassandra-env.sh.j2"
+    dest: "/opt/cassandra/conf/cassandra-env.sh"
+    backup: true
+
+
+- name: Create cassandra service
+  template:
+    src: cassandra.service.j2
+    dest: /etc/systemd/system/cassandra.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Reload systemd  # Notify the handler to reload systemd after creating the service file
+
+- name: Start cassandra service
+  ansible.builtin.systemd:
+    name: cassandra
+    state: started
+
+- name: Enable the cassandra service to start on boot
+  ansible.builtin.systemd:
+    name: cassandra
+    enabled: true
+
